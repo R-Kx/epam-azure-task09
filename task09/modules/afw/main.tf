@@ -23,7 +23,7 @@ resource "azurerm_network_security_rule" "allow_fw_to_lb" {
   source_port_range           = var.wildcard
   destination_port_range      = var.destination_port_range
   source_address_prefix       = azurerm_public_ip.afw_pip.ip_address
-  destination_address_prefix  = var.aks_loadbalancer_ip
+  destination_address_prefix  = var.wildcard
   resource_group_name         = var.aks_rg_name
   network_security_group_name = data.azurerm_network_security_group.aks_nsg.name
 }
@@ -72,6 +72,12 @@ resource "azurerm_route_table" "rt" {
     address_prefix         = "0.0.0.0/0"
     next_hop_type          = "VirtualAppliance"
     next_hop_in_ip_address = azurerm_firewall.afw.ip_configuration[0].private_ip_address
+  }
+
+  route {
+    name           = "fw-pub-ip-bypass"
+    address_prefix = "${azurerm_public_ip.afw_pip.ip_address}/32"
+    next_hop_type  = "Internet"
   }
 }
 
