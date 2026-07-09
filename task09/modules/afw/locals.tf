@@ -25,12 +25,13 @@ locals {
 
   nat_rules = [
     {
-      name               = "nat-to-aks-nginx"
-      source_addresses   = ["*"]
-      destination_ports  = ["80"]
-      translated_address = var.aks_loadbalancer_ip
-      translated_port    = "80"
-      protocols          = ["TCP"]
+      name                  = "nat-to-aks-nginx"
+      source_addresses      = ["*"]
+      destination_ports     = ["80"]
+      destination_addresses = [azurerm_public_ip.afw_pip.ip_address]
+      translated_address    = var.aks_loadbalancer_ip
+      translated_port       = "80"
+      protocols             = ["TCP"]
     }
   ]
 }

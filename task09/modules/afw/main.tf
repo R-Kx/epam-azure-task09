@@ -120,7 +120,7 @@ resource "azurerm_firewall_nat_rule_collection" "nat_rule" {
       name                  = rule.value.name
       source_addresses      = rule.value.source_addresses
       destination_ports     = rule.value.destination_ports
-      destination_addresses = ["*"]
+      destination_addresses = rule.value.destination_addresses
       translated_address    = rule.value.translated_address
       translated_port       = rule.value.translated_port
       protocols             = rule.value.protocols
