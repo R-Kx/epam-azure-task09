@@ -18,4 +18,6 @@ module "afw" {
   subnet_name             = var.subnet_name
   afw_subnet              = var.afw_subnet
   fw_collection_rule_type = var.fw_collection_rule_type
+  aks_loadbalancer_ip     = var.aks_loadbalancer_ip
+  aks_subnet_space        = var.aks_subnet_space
 }
