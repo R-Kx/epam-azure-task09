@@ -28,7 +28,7 @@ variable "subnet_name" {
   description = "name of existing subnet"
 }
 
-variable "subnet_space" {
+variable "aks_subnet_space" {
   type        = string
   description = "existing subnet addess space"
 }

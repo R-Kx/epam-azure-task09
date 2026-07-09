@@ -68,18 +68,22 @@ resource "azurerm_firewall_application_rule_collection" "app_rule" {
   priority            = 100
   action              = var.fw_collection_rule_type
 
-  rule {
-    name             = "allow-http-https"
-    source_addresses = [data.azurerm_subnet.aks_subnet.address_prefixes[0]]
-    target_fqdns     = ["*.microsoft.com", "*.azure.com"]
-    protocol {
-      port = "80"
-      type = "Http"
-    }
+  dynamic "rule" {
+    for_each = local.app_rules
+    content {
+      name             = rule.value.name
+      source_addresses = rule.value.source_addresses
+      target_fqdns     = rule.value.target_fqdns
 
-    protocol {
-      port = "443"
-      type = "Https"
+      protocol {
+        port = "80"
+        type = "Http"
+      }
+
+      protocol {
+        port = "443"
+        type = "Https"
+      }
     }
   }
 }
@@ -91,12 +95,15 @@ resource "azurerm_firewall_network_rule_collection" "net_rule" {
   priority            = 200
   action              = var.fw_collection_rule_type
 
-  rule {
-    name                  = "allow-dns"
-    source_addresses      = [data.azurerm_subnet.aks_subnet.address_prefixes[0]]
-    destination_ports     = ["53"]
-    destination_addresses = ["*"]
-    protocols             = ["UDP", "TCP"]
+  dynamic "rule" {
+    for_each = local.network_rules
+    content {
+      name                  = rule.value.name
+      source_addresses      = rule.value.source_addresses
+      destination_ports     = rule.value.destination_ports
+      destination_addresses = rule.value.destination_addresses
+      protocols             = rule.value.protocols
+    }
   }
 }
 
@@ -107,13 +114,16 @@ resource "azurerm_firewall_nat_rule_collection" "nat_rule" {
   priority            = 300
   action              = var.afw_nat_action_type
 
-  rule {
-    name                  = "nat-to-aks-nginx"
-    source_addresses      = ["*"]
-    destination_ports     = ["80"]
-    destination_addresses = [azurerm_public_ip.afw_pip.ip_address]
-    translated_port       = "80"
-    translated_address    = var.lb_ip_address
-    protocols             = ["TCP"]
+  dynamic "rule" {
+    for_each = local.nat_rules
+    content {
+      name                  = rule.value.name
+      source_addresses      = rule.value.source_addresses
+      destination_ports     = rule.value.destination_ports
+      destination_addresses = [azurerm_public_ip.afw_pip.ip_address]
+      translated_address    = rule.value.translated_address
+      translated_port       = rule.value.translated_port
+      protocols             = rule.value.protocols
+    }
   }
 }

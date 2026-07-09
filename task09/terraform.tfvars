@@ -10,7 +10,7 @@ vnet_space = "10.0.0.0/16"
 
 subnet_name = "aks-snet"
 
-subnet_space = "10.0.0.0/24"
+aks_subnet_space = "10.0.0.0/24"
 
 aks_cluster_name = "cmtr-4iyfgpi2-mod9-aks"
 

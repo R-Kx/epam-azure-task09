@@ -67,3 +67,13 @@ variable "afw_nat_action_type" {
   type        = string
   description = "nat collection rule action type"
 }
+
+variable "aks_subnet_space" {
+  type        = string
+  description = "aks subnet cidr"
+}
+
+variable "aks_loadbalancer_ip" {
+  type        = string
+  description = "lb of aks"
+}
