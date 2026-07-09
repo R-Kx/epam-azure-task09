@@ -1,5 +1,5 @@
 locals {
-  pub_ip       = format("%s-afw-pip", var.unique_id)
+  pub_ip       = format("%s-pip", var.unique_id)
   afw_name     = format("%s-afw", var.unique_id)
   rt_name      = format("%s-rt", var.unique_id)
   afw_app_rule = format("%s-afw-app-rule", var.unique_id)
