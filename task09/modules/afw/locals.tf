@@ -19,7 +19,7 @@ locals {
     {
       name             = "allow-http-https"
       source_addresses = [var.aks_subnet_space]
-      target_fqdns     = ["*.microsoft.com", "*.azure.com"]
+      target_fqdns     = ["*.microsoft.com", "*.azure.com", "*.azmk8s.io", "*.production.fluentbit.io"]
     }
   ]
 
