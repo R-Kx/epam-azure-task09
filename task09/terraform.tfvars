@@ -14,7 +14,7 @@ subnet_space = "10.0.0.0/24"
 
 aks_cluster_name = "cmtr-4iyfgpi2-mod9-aks"
 
-lb_ip_address = "20.216.199.139"
+aks_loadbalancer_ip = "20.216.199.139"
 
 public_ip_name = "cmtr-4iyfgpi2-mod9-pip"
 

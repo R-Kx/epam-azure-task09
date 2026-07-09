@@ -38,7 +38,7 @@ variable "aks_cluster_name" {
   description = "name of existing aks cluster"
 }
 
-variable "lb_ip_address" {
+variable "aks_loadbalancer_ip" {
   type        = string
   description = "name of existing aks lb pub ip"
 }

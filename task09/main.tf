@@ -8,7 +8,7 @@ module "afw" {
   location                = var.location
   rg_name                 = local.rg_name
   vnet_name               = local.vnet_name
-  lb_ip_address           = var.lb_ip_address
+  lb_ip_address           = var.aks_loadbalancer_ip
   afw_pip_sku             = var.afw_pip_sku
   cidr_block              = var.cidr_block
   afw_nat_action_type     = var.afw_nat_action_type
