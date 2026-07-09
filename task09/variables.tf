@@ -83,3 +83,33 @@ variable "afw_nat_action_type" {
   type        = string
   description = "nat collection rule action type"
 }
+
+variable "nsg_name" {
+  type = string
+  description = "name of aks nsg"
+}
+
+variable "aks_rg_name" {
+  type = string
+  description = "name of aks rg"
+}
+
+variable "nsg_rule_name" {
+  type = string
+  description = "name of nsg rule"
+}
+
+variable "direction_type" {
+  type = string
+  description = "type of direction"
+}
+
+variable "wildcard" {
+  type = string
+  description = "var for wildcard"
+}
+
+variable "destination_port_range" {
+  type = string
+  description = "dest. port range"
+}
