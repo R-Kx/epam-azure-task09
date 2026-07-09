@@ -20,4 +20,10 @@ module "afw" {
   fw_collection_rule_type = var.fw_collection_rule_type
   aks_loadbalancer_ip     = var.aks_loadbalancer_ip
   aks_subnet_space        = var.aks_subnet_space
+  aks_rg_name             = var.aks_rg_name
+  wildcard                = var.wildcard
+  nsg_name                = var.nsg_name
+  direction_type          = var.direction_type
+  destination_port_range  = var.destination_port_range
+  nsg_rule_name           = var.nsg_rule_name
 }

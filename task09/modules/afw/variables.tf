@@ -77,3 +77,33 @@ variable "aks_loadbalancer_ip" {
   type        = string
   description = "lb of aks"
 }
+
+variable "nsg_name" {
+  type        = string
+  description = "name of aks nsg"
+}
+
+variable "aks_rg_name" {
+  type        = string
+  description = "name of aks rg"
+}
+
+variable "nsg_rule_name" {
+  type        = string
+  description = "name of nsg rule"
+}
+
+variable "direction_type" {
+  type        = string
+  description = "type of direction"
+}
+
+variable "wildcard" {
+  type        = string
+  description = "var for wildcard"
+}
+
+variable "destination_port_range" {
+  type        = string
+  description = "dest. port range"
+}

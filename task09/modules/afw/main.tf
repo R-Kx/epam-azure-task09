@@ -9,6 +9,25 @@ data "azurerm_subnet" "aks_subnet" {
   virtual_network_name = var.vnet_name
 }
 
+data "azurerm_network_security_group" "aks_nsg" {
+  name                = var.nsg_name
+  resource_group_name = var.aks_rg_name
+}
+
+resource "azurerm_network_security_rule" "allow_fw_to_lb" {
+  name                        = var.nsg_rule_name
+  priority                    = 400
+  direction                   = var.direction_type
+  access                      = var.fw_collection_rule_type
+  protocol                    = var.wildcard
+  source_port_range           = var.wildcard
+  destination_port_range      = var.destination_port_range
+  source_address_prefix       = azurerm_public_ip.afw_pip.ip_address
+  destination_address_prefix  = var.aks_loadbalancer_ip
+  resource_group_name         = var.aks_rg_name
+  network_security_group_name = data.azurerm_network_security_group.aks_nsg.name
+}
+
 resource "azurerm_subnet" "afw_subnet" {
   name                 = var.afw_subnet
   resource_group_name  = var.rg_name
@@ -125,47 +144,5 @@ resource "azurerm_firewall_nat_rule_collection" "nat_rule" {
       translated_port       = rule.value.translated_port
       protocols             = rule.value.protocols
     }
-  }
-
-  provisioner "local-exec" {
-    command = <<EOT
-      RG_NAME="cmtr-4iyfgpi2-mod9-rg"
-      PUBLIC_IP_NAME="cmtr-4iyfgpi2-mod9-pip"
-      AKS_CLUSTER_NAME="cmtr-4iyfgpi2-mod9-aks"
-
-      echo "Waiting Terraform to create firewall Public IP"
-      while true; do
-          public_ip_address=$(az network public-ip show -g "$RG_NAME" -n "$PUBLIC_IP_NAME" --query ipAddress -o tsv 2>/dev/null)
-          if [ ! -z "$public_ip_address" ]; then
-              echo "Firewall pub ip found: $public_ip_address"
-              break
-          fi
-          sleep 5
-      done
-
-      echo "Finding AKS internal NSG and current LoadBalancer IP..."
-      aks_rg=$(az aks show -n $AKS_CLUSTER_NAME -g $RG_NAME --query nodeResourceGroup -o tsv)
-      aks_nsg=$(az resource list -g $aks_rg --resource-type=Microsoft.Network/networkSecurityGroups --query "[0].name" -o tsv)
-
-      LB_IP_ADDRESS=$(kubectl get svc nginx-loadbalancer -n default -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
-
-      echo "Current AKS LoadBalancer IP is: $LB_IP_ADDRESS"
-      echo "NSG found: $aks_nsg. Adding Security Rules.."
-
-      az network nsg rule create \
-        --resource-group "$aks_rg" \
-        --nsg-name "$aks_nsg" \
-        --name AllowAccessFromFirewallPublicIPToLoadBalancerIP \
-        --priority 400 \
-        --access Allow \
-        --protocol "*" \
-        --direction Inbound \
-        --source-address-prefix "$public_ip_address" \
-        --source-port-range "*" \
-        --destination-address-prefix "$LB_IP_ADDRESS" \
-        --destination-port-range 80
-
-      echo "Rule Added Successfully! Traffic Is Opened."
-    EOT
   }
 }
